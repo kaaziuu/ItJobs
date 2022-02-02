@@ -1,5 +1,6 @@
-package com.kk.ItJobs.service;
+package com.kk.ItJobs.service.user;
 
+import com.kk.ItJobs.Dto.user.auth.RegisterRequest;
 import com.kk.ItJobs.model.AppUser;
 import com.kk.ItJobs.model.Role;
 
@@ -8,9 +9,7 @@ import java.util.List;
 public interface UserService {
     AppUser saveUser(AppUser user);
 
-    Role saveRole(Role role);
-
-    void addRoleToUser(String username, String roleName);
+    AppUser register(RegisterRequest request);
 
     AppUser getUser(String username);
 

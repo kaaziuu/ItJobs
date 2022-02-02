@@ -4,10 +4,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.kk.ItJobs.Dto.user.BaseResponse;
+import com.kk.ItJobs.Dto.user.auth.RegisterRequest;
+import com.kk.ItJobs.Dto.user.auth.RegisterResponse;
 import com.kk.ItJobs.Dto.user.roles.RoleToUserForm;
 import com.kk.ItJobs.model.AppUser;
 import com.kk.ItJobs.model.Role;
-import com.kk.ItJobs.service.UserService;
+import com.kk.ItJobs.service.user.UserService;
 import com.kk.ItJobs.utils.JwtUtils;
 import com.kk.ItJobs.utils.JwtUtilsImpl;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +24,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,24 +43,37 @@ public class UserController {
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
-    @PostMapping("/role/save")
-    public ResponseEntity<Role> saveRole(@RequestBody Role role) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveRole(role));
+    @PostMapping("/register")
+    public BaseResponse<RegisterResponse> register(
+            @RequestBody RegisterRequest registerRequest,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        var user = userService.register(registerRequest);
+        if(user == null){
+            return new BaseResponse<>(
+                    false,
+                    "user with this username exist",
+                    null
+            );
+        }
+        var roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
+        var accessToken = jwtUtils.generateJwt(user.getUsername(), roles, request.getRequestURL().toString());
+        var refreshToken = jwtUtils.generateRefreshToken(user.getUsername(), request.getRequestURL().toString());
+        jwtUtils.setRefreshTokenToCookie(response, refreshToken);
+        return new BaseResponse<>(
+                true,
+                "",
+                new RegisterResponse(accessToken));
     }
 
-    @PostMapping("/role/addtouser")
-    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
-        userService.addRoleToUser(form.getUsername(), form.getRoleName());
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/token/refresh")
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        var authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+    @PostMapping("/token/refresh")
+    public void refreshToken(
+            @CookieValue(value = "refreshToken") String refreshToken,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        if (refreshToken != null) {
             try {
-                var refreshToken = authorizationHeader.substring("Bearer ".length());
                 Algorithm algorithm = Algorithm.HMAC256(JwtUtilsImpl.secret.getBytes());
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refreshToken);
@@ -69,7 +83,7 @@ public class UserController {
                 AppUser user = userService.getUser(username);
                 var roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
                 String accessToken = jwtUtils.generateJwt(user.getUsername(), roles, request.getRequestURL().toString());
-                jwtUtils.setTokensToResponse(response, accessToken, refreshToken);
+                jwtUtils.setTokensToResponse(response, accessToken);
             } catch (Exception exception) {
                 jwtUtils.setErrorToResponse(response, exception);
             }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
@@ -40,10 +41,9 @@ public class JwtUtilsImpl implements JwtUtils {
                 .sign(algorithm);
     }
 
-    public void setTokensToResponse(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
+    public void setTokensToResponse(HttpServletResponse response, String accessToken) throws IOException {
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);
-        tokens.put("refresh_token", refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
@@ -53,9 +53,16 @@ public class JwtUtilsImpl implements JwtUtils {
         response.setHeader("error", exception.getMessage());
         response.setStatus(FORBIDDEN.value());
         Map<String, String> error = new HashMap<>();
-        error.put("error_message", exception.getMessage());
+        error.put("errorMessage", exception.getMessage());
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), error);
+    }
+
+    public void setRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
     }
 
 }

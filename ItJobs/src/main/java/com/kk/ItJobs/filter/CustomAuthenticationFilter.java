@@ -1,6 +1,5 @@
 package com.kk.ItJobs.filter;
 
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kk.ItJobs.Dto.user.auth.AuthRequest;
 import com.kk.ItJobs.utils.JwtUtils;
@@ -49,14 +48,15 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         User user = (User) authResult.getPrincipal();
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+
         var roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
         String accessToken = jwtUtils.generateJwt(user.getUsername(), roles, request.getRequestURL().toString());
 
         String refreshToken = jwtUtils.generateRefreshToken(user.getUsername(), request.getRequestURL().toString());
-        jwtUtils.setTokensToResponse(response, accessToken, refreshToken);
+        jwtUtils.setRefreshTokenToCookie(response, refreshToken);
+        jwtUtils.setTokensToResponse(response, accessToken);
     }
 }

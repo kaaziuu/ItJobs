@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.kk.ItJobs.security.PublicApi;
 import com.kk.ItJobs.utils.JwtUtils;
 import com.kk.ItJobs.utils.JwtUtilsImpl;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
 
-        if (!request.getServletPath().equals("/api/login")
-                && !request.getServletPath().equals("/api/token/refresh")
+        if (!PublicApi.publicApiList.contains(request.getServletPath())
                 && authorizationHeader != null
                 && authorizationHeader.startsWith("Bearer ")) {
             try {

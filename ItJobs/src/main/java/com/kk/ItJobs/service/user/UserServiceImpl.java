@@ -1,5 +1,6 @@
-package com.kk.ItJobs.service;
+package com.kk.ItJobs.service.user;
 
+import com.kk.ItJobs.Dto.user.auth.RegisterRequest;
 import com.kk.ItJobs.model.AppUser;
 import com.kk.ItJobs.model.Role;
 import com.kk.ItJobs.repository.RoleRepository;
@@ -51,18 +52,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Role saveRole(Role role) {
-        log.info("Saving new role {} to database", role.getName());
-        return roleRepository.save(role);
+    public AppUser register(RegisterRequest request) {
+        if(userRepository.findByUsername(request.getUsername()) != null){
+            return null;
+        }
+        log.info("Register a new user {}", request.getName());
+        var roles = new ArrayList<Role>();
+        roles.add(roleRepository.findByName("ROLE_USER"));
+        var user = new AppUser(
+                null,
+                request.getName(),
+                request.getSurname(),
+                request.getUsername(),
+                passwordEncoder.encode(request.getPassword()),
+                roles
+        );
+        return userRepository.save(user);
     }
 
-    @Override
-    public void addRoleToUser(String username, String roleName) {
-        log.info("Adding role {} to user {}", roleName, username);
-        var user = userRepository.findByUsername(username);
-        var role = roleRepository.findByName(roleName);
-        user.getRoles().add(role);
-    }
+
 
     @Override
     public AppUser getUser(String username) {

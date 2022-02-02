@@ -11,8 +11,10 @@ public interface JwtUtils {
 
     String generateRefreshToken(String username, String requestUrl);
 
-    void setTokensToResponse(HttpServletResponse response, String accessToken, String refreshToken) throws IOException;
+    void setTokensToResponse(HttpServletResponse response, String accessToken) throws IOException;
 
     void setErrorToResponse(HttpServletResponse response, Exception exception) throws IOException;
+
+    void setRefreshTokenToCookie(HttpServletResponse response, String refreshToken);
 
 }
