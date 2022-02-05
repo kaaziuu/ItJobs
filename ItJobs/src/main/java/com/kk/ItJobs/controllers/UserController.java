@@ -5,11 +5,10 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.kk.ItJobs.Dto.user.BaseResponse;
+import com.kk.ItJobs.Dto.user.auth.AuthResponse;
+import com.kk.ItJobs.Dto.user.auth.LoginRequest;
 import com.kk.ItJobs.Dto.user.auth.RegisterRequest;
-import com.kk.ItJobs.Dto.user.auth.RegisterResponse;
-import com.kk.ItJobs.Dto.user.roles.RoleToUserForm;
 import com.kk.ItJobs.model.AppUser;
-import com.kk.ItJobs.model.Role;
 import com.kk.ItJobs.service.user.UserService;
 import com.kk.ItJobs.utils.JwtUtils;
 import com.kk.ItJobs.utils.JwtUtilsImpl;
@@ -23,11 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@CrossOrigin(origins = {"http://localhost:3000"})
 public class UserController {
     private final UserService userService;
     private final JwtUtils jwtUtils;
@@ -43,32 +42,55 @@ public class UserController {
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
+    @PostMapping("/login/v2")
+    public AuthResponse Login(
+            @RequestBody LoginRequest loginRequest,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws RuntimeException {
+        var user = userService.login(loginRequest);
+        if (user == null) {
+            throw new RuntimeException("invalid username or password");
+        }
+        var accessToken = jwtUtils.setAccessTokenAndRefreshToken(response, request, user);
+        return new AuthResponse(
+                accessToken,
+                user.getName(),
+                user.getSurname(),
+                user.getUsername(),
+                user.getId()
+        );
+    }
+
     @PostMapping("/register")
-    public BaseResponse<RegisterResponse> register(
+    public BaseResponse<AuthResponse> register(
             @RequestBody RegisterRequest registerRequest,
             HttpServletRequest request,
             HttpServletResponse response
-    ) throws IOException {
+    ) {
         var user = userService.register(registerRequest);
-        if(user == null){
+        if (user == null) {
             return new BaseResponse<>(
                     false,
                     "user with this username exist",
                     null
             );
         }
-        var roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
-        var accessToken = jwtUtils.generateJwt(user.getUsername(), roles, request.getRequestURL().toString());
-        var refreshToken = jwtUtils.generateRefreshToken(user.getUsername(), request.getRequestURL().toString());
-        jwtUtils.setRefreshTokenToCookie(response, refreshToken);
+        var accessToken = jwtUtils.setAccessTokenAndRefreshToken(response, request, user);
         return new BaseResponse<>(
                 true,
                 "",
-                new RegisterResponse(accessToken));
+                new AuthResponse(
+                        accessToken,
+                        user.getName(),
+                        user.getSurname(),
+                        user.getPassword(),
+                        user.getId()
+                ));
     }
 
     @PostMapping("/token/refresh")
-    public void refreshToken(
+    public AuthResponse refreshToken(
             @CookieValue(value = "refreshToken") String refreshToken,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -77,20 +99,27 @@ public class UserController {
                 Algorithm algorithm = Algorithm.HMAC256(JwtUtilsImpl.secret.getBytes());
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refreshToken);
-
                 var username = decodedJWT.getSubject();
-
                 AppUser user = userService.getUser(username);
-                var roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
-                String accessToken = jwtUtils.generateJwt(user.getUsername(), roles, request.getRequestURL().toString());
-                jwtUtils.setTokensToResponse(response, accessToken);
+                var accessToken = jwtUtils.setAccessTokenAndRefreshToken(response, request, user);
+                return new AuthResponse(
+                        accessToken,
+                        user.getName(),
+                        user.getSurname(),
+                        user.getUsername(),
+                        user.getId()
+                );
+
             } catch (Exception exception) {
                 jwtUtils.setErrorToResponse(response, exception);
             }
-        } else {
-            throw new RuntimeException("Refresh token is missing ");
         }
+        throw new RuntimeException("Refresh token is missing ");
+    }
 
+    @PostMapping("/logout/v2")
+    public void logout(HttpServletResponse response){
+        jwtUtils.removeRefreshToken(response);
     }
 }
 

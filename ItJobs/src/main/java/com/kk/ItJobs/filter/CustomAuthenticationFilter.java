@@ -2,6 +2,7 @@ package com.kk.ItJobs.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kk.ItJobs.Dto.user.auth.AuthRequest;
+import com.kk.ItJobs.service.user.UserService;
 import com.kk.ItJobs.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
+    private final UserService userService;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -50,13 +51,13 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         User user = (User) authResult.getPrincipal();
-
+        var appUser = userService.getUser(user.getUsername());
         var roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
         String accessToken = jwtUtils.generateJwt(user.getUsername(), roles, request.getRequestURL().toString());
 
         String refreshToken = jwtUtils.generateRefreshToken(user.getUsername(), request.getRequestURL().toString());
         jwtUtils.setRefreshTokenToCookie(response, refreshToken);
-        jwtUtils.setTokensToResponse(response, accessToken);
+        jwtUtils.setAuthResponseToResponse(response, accessToken, appUser);
     }
 }

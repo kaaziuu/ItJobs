@@ -1,12 +1,13 @@
-import { useState } from "react";
-import { Nav, NavbarBrand } from "react-bootstrap";
-import { NavDropdown } from "react-bootstrap";
-import { Container, Navbar } from "react-bootstrap";
+import { observer } from "mobx-react-lite";
+import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { UseStore } from "../../stores/Store";
 import Path from "../../utils/route/Path";
 
 const Header = () => {
-    const [isLogin, setIsLogin] = useState(true);
-
+    const { userStore } = UseStore();
+    const isLogged = userStore.user.isLogin;
+    console.log(userStore.getUser.id);
+    console.log(userStore.getUser.isLogin);
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container>
@@ -15,7 +16,7 @@ const Header = () => {
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link href="#features">Offerts</Nav.Link>
-                        {isLogin ? (
+                        {isLogged ? (
                             <NavDropdown title="My Account" id="collasible-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">My Offert</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.2">My Company</NavDropdown.Item>
@@ -23,8 +24,8 @@ const Header = () => {
                         ) : null}
                     </Nav>
                     <Nav>
-                        {isLogin ? (
-                            <Nav.Link onClick={() => setIsLogin(false)}>Logout</Nav.Link>
+                        {isLogged ? (
+                            <Nav.Link onClick={userStore.logout}>Logout</Nav.Link>
                         ) : (
                             <Nav.Link href={Path.login}>Login</Nav.Link>
                         )}
@@ -35,4 +36,4 @@ const Header = () => {
     );
 };
 
-export default Header;
+export default observer(Header);

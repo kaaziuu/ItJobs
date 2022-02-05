@@ -1,0 +1,20 @@
+.container-login {
+    margin-top: 30px;
+    box-sizing: border-box;
+    .login-form {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 10px;
+        .login-form-group-title {
+            text-align: center;
+        }
+        .login-form-group {
+            margin: 10px 0;
+            padding: 0 10px;
+            .login-submit {
+                min-width: 150px;
+                text-align: center;
+            }
+        }
+    }
+}

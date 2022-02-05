@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterResponse {
+public class AuthResponse {
     private String accessToken;
+    private String name;
+    private String surname;
+    private String username;
+    private Long id;
 }

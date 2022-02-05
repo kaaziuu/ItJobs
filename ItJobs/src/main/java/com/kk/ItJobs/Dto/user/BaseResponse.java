@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BaseResponse<T> {
     private Boolean isSuccess;
-    private String Message;
-    private T Data;
+    private String message;
+    private T data;
 }

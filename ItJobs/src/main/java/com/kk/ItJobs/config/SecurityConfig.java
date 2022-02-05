@@ -1,7 +1,8 @@
-package com.kk.ItJobs.security;
+package com.kk.ItJobs.config;
 
 import com.kk.ItJobs.filter.CustomAuthenticationFilter;
 import com.kk.ItJobs.filter.CustomAuthorizationFilter;
+import com.kk.ItJobs.service.user.UserService;
 import com.kk.ItJobs.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.session.SessionManagementFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import java.util.Arrays;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -26,18 +37,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtUtils jwtUtils;
+    private final UserService userService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 
+    @Bean
+    CorsFilter corsFilter() {
+        return new CorsFilter();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(), jwtUtils);
+        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
+
+        CustomAuthenticationFilter customAuthenticationFilter =
+                new CustomAuthenticationFilter(authenticationManagerBean(), jwtUtils, userService);
         customAuthenticationFilter.setFilterProcessesUrl("/api/login");
 
-        http.csrf().disable();
+        http.csrf().disable().authorizeRequests();
 
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         for (var api : PublicApi.publicApiList) {
@@ -46,9 +66,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(GET, "/api/user/**").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(POST, "/api/role/**").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(POST, "/api/logout/**").hasAnyAuthority("ROLE_USER");
+
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomAuthorizationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(corsFilter(), SessionManagementFilter.class);
+
     }
 
     @Bean
@@ -56,4 +80,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+
 }

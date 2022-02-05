@@ -1,5 +1,6 @@
 package com.kk.ItJobs.service.user;
 
+import com.kk.ItJobs.Dto.user.auth.LoginRequest;
 import com.kk.ItJobs.Dto.user.auth.RegisterRequest;
 import com.kk.ItJobs.model.AppUser;
 import com.kk.ItJobs.model.Role;
@@ -70,6 +71,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.save(user);
     }
 
+    @Override
+    public AppUser login(LoginRequest request) {
+        var user = userRepository.findByUsername(request.getUsername());
+        if(user == null){
+            return  null;
+        }
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
+            return null;
+        }
+        return user;
+    }
 
 
     @Override

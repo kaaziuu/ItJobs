@@ -4,9 +4,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.kk.ItJobs.security.PublicApi;
+import com.kk.ItJobs.config.PublicApi;
 import com.kk.ItJobs.utils.JwtUtils;
 import com.kk.ItJobs.utils.JwtUtilsImpl;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +27,7 @@ import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtils;
 
