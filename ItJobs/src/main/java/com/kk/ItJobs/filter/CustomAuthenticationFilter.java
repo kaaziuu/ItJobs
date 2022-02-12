@@ -56,8 +56,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         String accessToken = jwtUtils.generateJwt(user.getUsername(), roles, request.getRequestURL().toString());
 
-        String refreshToken = jwtUtils.generateRefreshToken(user.getUsername(), request.getRequestURL().toString());
-        jwtUtils.setRefreshTokenToCookie(response, refreshToken);
         jwtUtils.setAuthResponseToResponse(response, accessToken, appUser);
     }
 }

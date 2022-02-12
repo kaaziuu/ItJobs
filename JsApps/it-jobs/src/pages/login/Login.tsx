@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { useCookies } from "react-cookie";
 import "../../assets/login/login.scss";
 import { UseStore } from "../../stores/Store";
 
@@ -9,10 +10,16 @@ const Login = () => {
     const [password, setPassword] = useState<string>("");
     const [isInvalid, setIsInvalid] = useState<boolean>(false);
     const { userStore } = UseStore();
+    const [cookie, setCookie] = useCookies(["token"]);
 
-    const login = () => {
-        userStore.login({ username: username, password: password });
-        if (!userStore.isLoggedIn) {
+    const login = async () => {
+        await userStore.login({ username: username, password: password });
+        console.log(userStore.getUser.id);
+        console.log(userStore.getisLoggedIn);
+        if (userStore.getisLoggedIn) {
+            setIsInvalid(false);
+            setCookie("token", userStore.getUser.accessToken);
+        } else {
             setIsInvalid(true);
         }
     };

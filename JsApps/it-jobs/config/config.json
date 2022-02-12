@@ -1,4 +1,4 @@
 {
     "serverUrl": "",
-    "howLongIsValidAccessToken": 30
+    "howManyDaysTokenIsValid": 7
 }

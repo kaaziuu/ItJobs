@@ -7,15 +7,18 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { createBrowserHistory } from "history";
 import "./assets/index.scss";
 import { store, StoreContext } from "./stores/Store";
+import { CookiesProvider } from "react-cookie";
 
 export const history = createBrowserHistory();
 ReactDOM.render(
     <React.StrictMode>
-        <StoreContext.Provider value={store}>
-            <Router history={history}>
-                <App />
-            </Router>
-        </StoreContext.Provider>
+        <CookiesProvider>
+            <StoreContext.Provider value={store}>
+                <Router history={history}>
+                    <App />
+                </Router>
+            </StoreContext.Provider>
+        </CookiesProvider>
     </React.StrictMode>,
     document.getElementById("root")
 );

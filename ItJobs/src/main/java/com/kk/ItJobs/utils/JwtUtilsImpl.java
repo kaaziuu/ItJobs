@@ -1,8 +1,11 @@
 package com.kk.ItJobs.utils;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kk.ItJobs.Dto.user.BaseResponse;
 import com.kk.ItJobs.Dto.user.auth.AuthResponse;
 import com.kk.ItJobs.model.AppUser;
 import com.kk.ItJobs.model.Role;
@@ -26,7 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Service
 public class JwtUtilsImpl implements JwtUtils {
     public static final String secret = "topSecret";
-    private final Integer howLongIsValidAccessToken = 10 * 60 * 1000; // 30 minutes
+    private final Integer howLongIsValidAccessToken = 60 * 60 * 24 * 7 * 1000; // 7 days
 
     public String generateJwt(String username, List<String> roles, String requestUrl) {
         var algorithm = Algorithm.HMAC256(secret);
@@ -38,26 +41,22 @@ public class JwtUtilsImpl implements JwtUtils {
                 .sign(algorithm);
     }
 
-    public String generateRefreshToken(String username, String requestUrl) {
-        var algorithm = Algorithm.HMAC256(secret);
-        return JWT.create()
-                .withSubject(username)
-                .withExpiresAt(new Date(System.currentTimeMillis() + 60 * 60 * 24 * 7 * 1000)) // one week
-                .withIssuer(requestUrl)
-                .sign(algorithm);
+    @Override
+    public String generateJwt(AppUser user, String requestUrl) {
+        var roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
+        return generateJwt(user.getUsername(), roles, requestUrl);
     }
 
     @Override
     public void setAuthResponseToResponse(HttpServletResponse response, String accessToken, AppUser user) throws IOException {
         response.setContentType(APPLICATION_JSON_VALUE);
-        var authResponse = new AuthResponse(
+        var baseResponse = new BaseResponse<>(
+                true,
+                "",
                 accessToken,
-                user.getName(),
-                user.getSurname(),
-                user.getUsername(),
-                user.getId()
+                AuthResponse.fromAppUser(user)
         );
-        new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+        new ObjectMapper().writeValue(response.getOutputStream(), baseResponse);
     }
 
     public void setErrorToResponse(HttpServletResponse response, Exception exception) throws IOException {
@@ -69,33 +68,12 @@ public class JwtUtilsImpl implements JwtUtils {
         new ObjectMapper().writeValue(response.getOutputStream(), error);
     }
 
-    public void setRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-    }
-
     @Override
-    public String getUsernameFormRequest(HttpServletRequest request) {
-        return null;
-    }
-
-    @Override
-    public String setAccessTokenAndRefreshToken(HttpServletResponse response, HttpServletRequest request, AppUser user) {
-        var roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
-        var accessToken = generateJwt(user.getUsername(), roles, request.getRequestURL().toString());
-        var refreshToken = generateRefreshToken(user.getUsername(), request.getRequestURL().toString());
-        setRefreshTokenToCookie(response, refreshToken);
-        return accessToken;
-    }
-
-    @Override
-    public void removeRefreshToken(HttpServletResponse response) {
-        Cookie cookie = new Cookie("refreshToken", "");
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+    public String getUsernameFromToken(String token) {
+        Algorithm algorithm = Algorithm.HMAC256(JwtUtilsImpl.secret.getBytes());
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+        return decodedJWT.getSubject();
     }
 
 }

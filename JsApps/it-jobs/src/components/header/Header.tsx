@@ -5,9 +5,7 @@ import Path from "../../utils/route/Path";
 
 const Header = () => {
     const { userStore } = UseStore();
-    const isLogged = userStore.user.isLogin;
-    console.log(userStore.getUser.id);
-    console.log(userStore.getUser.isLogin);
+    const isLogged = userStore.getisLoggedIn;
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container>

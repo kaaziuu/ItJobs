@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class BaseResponse<T> {
     private Boolean isSuccess;
     private String message;
+    private String accessToken;
     private T data;
 }

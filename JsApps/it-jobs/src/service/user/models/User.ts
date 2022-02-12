@@ -5,5 +5,4 @@ export default interface User {
     username: string;
     expireTokenDate: Date;
     accessToken: string;
-    isLogin: boolean;
 }

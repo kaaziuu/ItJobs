@@ -8,6 +8,7 @@ public class PublicApi {
             "/api/login",
             "/api/token/refresh",
             "/api/register",
-            "/api/login/v2"
+            "/api/login/v2",
+            "/api/user/data"
     );
 }

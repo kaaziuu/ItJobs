@@ -1,7 +1,7 @@
 const UserApiPath = {
     login: "/api/login/v2",
     register: "/api/register",
-    refreshToken: "/api/token/refresh",
+    userData: "/api/user/data",
     logout: "/api/logout/v2",
 };
 
