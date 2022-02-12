@@ -3,6 +3,7 @@ import Config from "../../utils/config/Config";
 import BaseResponse from "../baseDto/BaseResponse";
 import AuthResponse from "./dto/AuthResponse";
 import LoginReguest from "./dto/LoginRequest";
+import RegisterReguest from "./dto/RegisterRequest";
 import User from "./models/User";
 import UserApiPath from "./UserApiPaht";
 
@@ -46,6 +47,22 @@ export const Logout = async (accessToken: string): Promise<User> => {
         },
     });
     return GetDefultUser();
+};
+
+export const Register = async (registerRequest: RegisterReguest): Promise<BaseResponse<AuthResponse>> => {
+    const resp = await axios
+        .post<RegisterReguest, AxiosResponse<BaseResponse<AuthResponse>>>(
+            `${Config.serverUrl}${UserApiPath.register}`,
+            registerRequest
+        )
+        .then((resp) => resp.data)
+        .catch((e: AxiosError) => {
+            return {
+                isSuccess: false,
+                message: e.message,
+            } as BaseResponse<AuthResponse>;
+        });
+    return resp;
 };
 
 export const GetDefultUser = (): User => {

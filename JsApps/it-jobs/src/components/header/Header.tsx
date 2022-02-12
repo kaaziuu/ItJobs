@@ -1,11 +1,19 @@
 import { observer } from "mobx-react-lite";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { useCookies } from "react-cookie";
 import { UseStore } from "../../stores/Store";
 import Path from "../../utils/route/Path";
 
 const Header = () => {
     const { userStore } = UseStore();
     const isLogged = userStore.getisLoggedIn;
+    const [tokenCookie, setTokenCookie, removeTokenCookie] = useCookies<string>(["token"]);
+
+    const logout = () => {
+        removeTokenCookie("token");
+        userStore.logout();
+    };
+
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container>
@@ -23,7 +31,7 @@ const Header = () => {
                     </Nav>
                     <Nav>
                         {isLogged ? (
-                            <Nav.Link onClick={userStore.logout}>Logout</Nav.Link>
+                            <Nav.Link onClick={logout}>Logout</Nav.Link>
                         ) : (
                             <Nav.Link href={Path.login}>Login</Nav.Link>
                         )}

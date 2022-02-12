@@ -4,7 +4,6 @@ import User from "./models/User";
 
 export const MapFromAuthToUser = (auth: AuthResponse, accessToken: string): User => {
     const now = new Date();
-    console.log("MapFromAuthToUser", accessToken);
     return {
         accessToken: accessToken,
         expireTokenDate: new Date(now.getTime() + Config.howManyDaysTokenIsValid * 3600 * 24 * 60000),

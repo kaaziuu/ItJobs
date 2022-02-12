@@ -1,1 +1,1 @@
-{"serverUrl":"http://localhost:8080","howLongIsValidAccessToken":30}
+{"serverUrl":"http://localhost:8080","howManyDaysTokenIsValid":7}
