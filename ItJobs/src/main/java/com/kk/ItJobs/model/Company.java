@@ -4,13 +4,14 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import java.util.Set;
+
 import static javax.persistence.GenerationType.AUTO;
 
 
 @Entity
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Company {
@@ -22,8 +23,11 @@ public class Company {
     private String description;
     private String motto;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private AppUser user;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private Set<JobOffer> jobOffers;
 
 }

@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { MapFromCompanyResponseToCompany } from "../service/company/CompanyMappers";
-import { CreateCompany, GetMyCompany } from "../service/company/CompanyService";
-import CreateCompanyRequest from "../service/company/dto/CreateCompanyRequest";
+import { CreateCompany, GetMyCompany, UpdateCompany } from "../service/company/CompanyService";
+import CreateUpdateCompanyRequest from "../service/company/dto/CreateUpdateCompanyRequest";
 import Company from "../service/company/models/Company";
 
 export class CompanyStore {
@@ -28,6 +28,7 @@ export class CompanyStore {
 
     fetchMyCompany = async (accessToken: string): Promise<void> => {
         this.isLoading = true;
+        this.isCompanyLoaded = false;
         try {
             const response = await GetMyCompany(accessToken);
             runInAction(() => {
@@ -50,10 +51,32 @@ export class CompanyStore {
         }
     };
 
-    createCompany = async (createForm: CreateCompanyRequest, accessToken: string): Promise<void> => {
+    createCompany = async (createForm: CreateUpdateCompanyRequest, accessToken: string): Promise<void> => {
         this.isLoading = true;
         try {
             const response = await CreateCompany(createForm, accessToken);
+            runInAction(() => {
+                if (response.isSuccess) {
+                    this.company = MapFromCompanyResponseToCompany(response.data);
+                    this.error = undefined;
+                } else {
+                    this.error = response.message;
+                }
+                this.isLoading = false;
+            });
+        } catch (e) {
+            runInAction(() => {
+                this.company = undefined;
+                this.isLoading = false;
+                console.log(e);
+            });
+        }
+    };
+
+    updateCompany = async (updateForm: CreateUpdateCompanyRequest, accessToken: string): Promise<void> => {
+        this.isLoading = true;
+        try {
+            const response = await UpdateCompany(updateForm, accessToken);
             runInAction(() => {
                 if (response.isSuccess) {
                     this.company = MapFromCompanyResponseToCompany(response.data);

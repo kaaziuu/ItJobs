@@ -21,10 +21,10 @@ const Header = () => {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="#features">Offerts</Nav.Link>
+                        <Nav.Link href="#features">Job offers</Nav.Link>
                         {isLogged ? (
                             <NavDropdown title="My Account" id="collasible-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">My Offert</NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">My job offers</NavDropdown.Item>
                                 <NavDropdown.Item href={Path.myComany}>My Company</NavDropdown.Item>
                             </NavDropdown>
                         ) : null}

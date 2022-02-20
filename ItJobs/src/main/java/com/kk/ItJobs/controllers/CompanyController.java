@@ -2,7 +2,7 @@ package com.kk.ItJobs.controllers;
 
 import com.kk.ItJobs.Dto.BaseResponse;
 import com.kk.ItJobs.Dto.company.CompanyResponse;
-import com.kk.ItJobs.Dto.company.CreateCompanyRequest;
+import com.kk.ItJobs.Dto.company.CreateUpdateCompanyRequest;
 import com.kk.ItJobs.service.company.CompanyService;
 import com.kk.ItJobs.service.user.UserService;
 import com.kk.ItJobs.utils.JwtUtils;
@@ -21,9 +21,9 @@ public class CompanyController {
 
     @PostMapping("/company")
     public BaseResponse<CompanyResponse> create(
-            @RequestBody CreateCompanyRequest createRequest,
+            @RequestBody CreateUpdateCompanyRequest createRequest,
             HttpServletRequest request
-            ) {
+    ) {
         var user = userService.getUser(jwtUtils.getUsernameFromRequest(request));
         return companyService.createCompany(createRequest, user);
     }
@@ -49,6 +49,15 @@ public class CompanyController {
                 "",
                 company
         );
+    }
+
+    @PostMapping("/company/update")
+    public BaseResponse<CompanyResponse> updateCompany(
+            @RequestBody CreateUpdateCompanyRequest createRequest,
+            HttpServletRequest request
+    ){
+        var user = userService.getUser(jwtUtils.getUsernameFromRequest(request));
+        return companyService.updateCompany(createRequest, user);
     }
 
 

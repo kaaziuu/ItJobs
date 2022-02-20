@@ -6,6 +6,7 @@ import Login from "../../pages/login/Login";
 import Register from "../../pages/register/Register";
 import Path from "./Path";
 import RouteWithSecurity from "./RouteWithSecurity";
+import UpdateCompany from "../../pages/company/UpdateCompany";
 
 const Router = () => (
     <>
@@ -27,6 +28,11 @@ const Router = () => (
             <Route exact path={Path.createCompany}>
                 <RouteWithSecurity>
                     <CreateCompany />
+                </RouteWithSecurity>
+            </Route>
+            <Route exact path={Path.updateCompany}>
+                <RouteWithSecurity>
+                    <UpdateCompany />
                 </RouteWithSecurity>
             </Route>
         </Switch>

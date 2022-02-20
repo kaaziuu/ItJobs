@@ -11,6 +11,7 @@ interface props {
     placeholder: string;
     feedbackText?: string;
     disable?: boolean;
+    value?: string;
 }
 
 const FormGroup: React.FC<props> = (prop) => {
@@ -25,6 +26,7 @@ const FormGroup: React.FC<props> = (prop) => {
                 isInvalid={prop.isInvalid}
                 placeholder={prop.placeholder}
                 disabled={prop.disable}
+                value={prop.value}
             />
             {prop.feedbackText ? (
                 <Form.Control.Feedback type="invalid">{prop.feedbackText!}</Form.Control.Feedback>

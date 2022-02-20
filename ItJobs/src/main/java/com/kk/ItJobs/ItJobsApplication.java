@@ -1,7 +1,9 @@
 package com.kk.ItJobs;
 
+import com.kk.ItJobs.Dto.company.CreateUpdateCompanyRequest;
 import com.kk.ItJobs.model.AppUser;
 import com.kk.ItJobs.model.Role;
+import com.kk.ItJobs.service.company.CompanyService;
 import com.kk.ItJobs.service.user.RoleService;
 import com.kk.ItJobs.service.user.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -30,7 +32,7 @@ public class ItJobsApplication {
     }
 
     @Bean
-    CommandLineRunner run(UserService userService, RoleService roleService) {
+    CommandLineRunner run(UserService userService, RoleService roleService, CompanyService companyService) {
         return args -> {
             roleService.saveRole(new Role(null, "ROLE_USER"));
             roleService.saveRole(new Role(null, "ROLE_ADMIN"));
@@ -45,6 +47,14 @@ public class ItJobsApplication {
             roleService.addRoleToUser("jim", "ROLE_USER");
             roleService.addRoleToUser("admin", "ROLE_USER");
             roleService.addRoleToUser("admin", "ROLE_ADMIN");
+
+            var user = userService.getUser("admin");
+            companyService.createCompany(new CreateUpdateCompanyRequest(
+               "test admin",
+               1,
+               "testowy opis",
+               "testowe motto"
+            ), user);
         };
 
     }

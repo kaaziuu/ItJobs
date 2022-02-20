@@ -4,6 +4,7 @@ const Path = {
     register: "/register",
     myComany: "/my-company",
     createCompany: "/create-company",
+    updateCompany: "/update-company",
 };
 
 export default Path;

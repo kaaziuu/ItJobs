@@ -1,4 +1,4 @@
-export default interface CreateCompanyRequest {
+export default interface CreateUpdateCompanyRequest {
     name: string;
     size: number;
     description: string;

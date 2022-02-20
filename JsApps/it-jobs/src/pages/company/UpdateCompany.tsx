@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import { history } from "../..";
@@ -11,24 +12,25 @@ import { UseStore } from "../../stores/Store";
 import CreateClass from "../../utils/components/CreateClass";
 import Path from "../../utils/route/Path";
 
-const CreateCompany: React.FC = () => {
+const UpdateCompany = () => {
     const { companyStore } = UseStore();
-    const [isInvalid, setIsInvalid] = useState<boolean>(false);
     const [name, setName] = useState<string>("");
     const [size, setSize] = useState<string>("0");
-    const [motto, setMotto] = useState<string | null>(null);
+    const [motto, setMotto] = useState<string>("");
     const [description, setDescription] = useState<string>("");
+    const [isInvalid, setIsInvalid] = useState<boolean>(false);
     const [cookie] = useCookies(["token"]);
     const baseClass = "create-company";
 
-    const createCompany = async () => {
-        const createForm = {
+    const updateCompany = async () => {
+        const updateForm = {
             description: description,
             name: name,
             size: parseInt(size),
             motto: motto,
         } as CreateUpdateCompanyRequest;
-        await companyStore.createCompany(createForm, cookie.token);
+
+        await companyStore.updateCompany(updateForm, cookie.token);
         if (!!!companyStore.error) {
             setIsInvalid(false);
             history.push(Path.myComany);
@@ -37,10 +39,31 @@ const CreateCompany: React.FC = () => {
         }
     };
 
+    const fetchMyCompany = async () => {
+        await companyStore.fetchMyCompany(cookie.token);
+        setName(companyStore.getCompany!.name);
+        setDescription(companyStore.getCompany!.description);
+        setMotto(companyStore.getCompany!.motto ? companyStore.getCompany!.motto : "");
+        setSize(companyStore.getCompany!.size);
+    };
+
+    useEffect(() => {
+        fetchMyCompany();
+    }, [companyStore]);
+
+    if (companyStore.isLoading || !companyStore.getIsCompanyLoaded) {
+        return <h1>loading</h1>;
+    }
+
+    if (companyStore.getIsCompanyLoaded && companyStore.getCompany === undefined) {
+        history.push(Path.createCompany);
+        return <></>;
+    }
+
     return (
         <CenterContainer containerClass={CreateClass("container", baseClass)}>
             <Form className={CreateClass(baseClass, "form")}>
-                <FormHeader baseClass={baseClass} title="Create Company" />
+                <FormHeader baseClass={baseClass} title="Update Company" />
                 <FormGroup
                     baseClass={baseClass}
                     isInvalid={isInvalid}
@@ -49,6 +72,7 @@ const CreateCompany: React.FC = () => {
                     onChange={setName}
                     typeInput="text"
                     placeholder="name"
+                    value={name}
                 />
                 <FormGroup
                     baseClass={baseClass}
@@ -58,6 +82,7 @@ const CreateCompany: React.FC = () => {
                     onChange={setSize}
                     typeInput="number"
                     placeholder="Company size"
+                    value={size}
                 />
                 <FormGroup
                     baseClass={baseClass}
@@ -67,6 +92,7 @@ const CreateCompany: React.FC = () => {
                     onChange={setMotto}
                     typeInput="text"
                     placeholder="motto"
+                    value={motto}
                 />
                 <FormTextAreaGroup
                     baseClass={baseClass}
@@ -77,15 +103,16 @@ const CreateCompany: React.FC = () => {
                     typeInput="text"
                     placeholder="description"
                     feedbackText={companyStore.error}
+                    value={description}
                 />
                 <Form.Group className={CreateClass(baseClass, "group")}>
                     <Button
                         variant="primary"
                         type="button"
-                        onClick={createCompany}
+                        onClick={updateCompany}
                         className={CreateClass(baseClass, "submit")}
                     >
-                        Create Company
+                        Update Company
                     </Button>
                 </Form.Group>
             </Form>
@@ -93,4 +120,4 @@ const CreateCompany: React.FC = () => {
     );
 };
 
-export default CreateCompany;
+export default observer(UpdateCompany);

@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { Card } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import { history } from "../..";
 import CenterContainer from "../../layout/common/CenterContainer";
@@ -38,6 +38,9 @@ const MyCompany: React.FC = () => {
                 <Card.Body>
                     <Card.Title>Size of comapny: {company!.size}</Card.Title>
                     <Card.Text>{company!.description}</Card.Text>
+                    <Button variant="secondary" onClick={() => history.push(Path.updateCompany)}>
+                        Update
+                    </Button>
                 </Card.Body>
             </Card>
         </CenterContainer>

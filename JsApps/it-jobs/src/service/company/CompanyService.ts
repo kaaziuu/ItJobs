@@ -4,7 +4,7 @@ import Config from "../../utils/config/Config";
 import BaseResponse from "../baseDto/BaseResponse";
 import CompanyApiPath from "./CompanyApiPath";
 import CompanyResponse from "./dto/CompanyResponse";
-import CreateCompanyRequest from "./dto/CreateCompanyRequest";
+import CreateUpdateCompanyRequest from "./dto/CreateUpdateCompanyRequest";
 
 export const GetMyCompany = async (accessToken: string): Promise<BaseResponse<CompanyResponse>> => {
     const response = await axios
@@ -23,12 +23,32 @@ export const GetMyCompany = async (accessToken: string): Promise<BaseResponse<Co
 };
 
 export const CreateCompany = async (
-    createForm: CreateCompanyRequest,
+    createForm: CreateUpdateCompanyRequest,
     accessToken: string
 ): Promise<BaseResponse<CompanyResponse>> => {
     const response = await axios
-        .post<CreateCompanyRequest, AxiosResponse<BaseResponse<CompanyResponse>>>(
+        .post<CreateUpdateCompanyRequest, AxiosResponse<BaseResponse<CompanyResponse>>>(
             `${Config.serverUrl}${CompanyApiPath.createCompany}`,
+            createForm,
+            GetBaseRequestConfig(accessToken)
+        )
+        .then((resp) => resp.data)
+        .catch((error) => {
+            return {
+                isSuccess: false,
+                message: error.message,
+            } as BaseResponse<CompanyResponse>;
+        });
+    return response;
+};
+
+export const UpdateCompany = async (
+    createForm: CreateUpdateCompanyRequest,
+    accessToken: string
+): Promise<BaseResponse<CompanyResponse>> => {
+    const response = await axios
+        .post<CreateUpdateCompanyRequest, AxiosResponse<BaseResponse<CompanyResponse>>>(
+            `${Config.serverUrl}${CompanyApiPath.updateCompany}`,
             createForm,
             GetBaseRequestConfig(accessToken)
         )

@@ -17,7 +17,7 @@ public class CompanyResponse {
     private String description;
     private String motto;
 
-    public static CompanyResponse CompanyResponseFromCompany(Company company) {
+    public static CompanyResponse companyResponseFromCompany(Company company) {
         return new CompanyResponse(
                 company.getId(),
                 company.getName(),
