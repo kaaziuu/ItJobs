@@ -9,7 +9,6 @@ function App() {
     Setup();
     const { userStore } = UseStore();
     const [tokenCookie] = useCookies<string>(["token"]);
-
     useEffect(() => {
         userStore.intiLoad(tokenCookie.token);
     }, [userStore]);

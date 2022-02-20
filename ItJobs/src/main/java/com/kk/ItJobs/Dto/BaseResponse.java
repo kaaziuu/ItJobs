@@ -1,4 +1,4 @@
-package com.kk.ItJobs.Dto.user;
+package com.kk.ItJobs.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

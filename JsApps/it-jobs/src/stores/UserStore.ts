@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import LoginReguest from "../service/user/dto/LoginRequest";
 import User from "../service/user/models/User";
-import { GetDefultUser, FetchUserData, Login, Register } from "../service/user/UserService";
+import { GetDefultUser, FetchUserData, Login, Register, GetRolesFromAccessToken } from "../service/user/UserService";
 import { MapFromAuthToUser } from "../service/user/UserMapper";
 import RegisterReguest from "../service/user/dto/RegisterRequest";
 
@@ -9,6 +9,7 @@ export class UserStore {
     user: User = GetDefultUser();
     isLoggedIn: boolean = false;
     isLoading: boolean = false;
+    roles: string[] = [];
     error?: string;
 
     constructor() {
@@ -32,6 +33,7 @@ export class UserStore {
         runInAction(() => {
             if (response.isSuccess) {
                 this.user = MapFromAuthToUser(response.data, response.accessToken);
+                GetRolesFromAccessToken(response.accessToken);
                 this.isLoggedIn = true;
             } else {
                 this.user = GetDefultUser();
@@ -46,6 +48,7 @@ export class UserStore {
             runInAction(() => {
                 if (response.isSuccess) {
                     this.user = MapFromAuthToUser(response.data, response.accessToken);
+                    this.roles = GetRolesFromAccessToken(response.accessToken);
                     this.isLoggedIn = true;
                 } else {
                     this.user = GetDefultUser();
@@ -67,6 +70,7 @@ export class UserStore {
             runInAction(() => {
                 if (response.isSuccess) {
                     this.user = MapFromAuthToUser(response.data, response.accessToken);
+                    this.roles = GetRolesFromAccessToken(response.accessToken);
                     this.isLoggedIn = true;
                 } else {
                     this.user = GetDefultUser();

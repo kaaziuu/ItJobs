@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import { history } from "../..";
+import CenterContainer from "../../layout/common/CenterContainer";
+import FormGroup from "../../layout/form/FormGroup";
+import FormHeader from "../../layout/form/FormHeader";
 import { UseStore } from "../../stores/Store";
-import { UserStore } from "../../stores/UserStore";
 import Path from "../../utils/route/Path";
 
 const Register = () => {
@@ -28,73 +30,56 @@ const Register = () => {
             setIsValid(false);
         }
     };
+    const baseClass = "auth-form";
 
     return (
-        <Container className="container-auth">
-            <Row>
-                <Col></Col>
-                <Col xs={6}>
-                    <Form className="auth-form">
-                        <Form.Group className="auth-form-group auth-form-group-title">
-                            <Form.Label className="form-auth-title">
-                                <h1>Register</h1>
-                            </Form.Label>
-                        </Form.Group>
-                        <Form.Group className="auth-form-group">
-                            <Form.Label className="auth-form-label">Name</Form.Label>
-                            <Form.Control
-                                className="auth-form-input"
-                                type="text"
-                                placeholder="name"
-                                onChange={(e) => setName(e.target.value)}
-                                required={true}
-                                isInvalid={!isValid}
-                            />
-                        </Form.Group>
-                        <Form.Group className="auth-form-group">
-                            <Form.Label className="auth-form-label">Surname</Form.Label>
-                            <Form.Control
-                                className="auth-form-input"
-                                type="text"
-                                placeholder="surname"
-                                onChange={(e) => setSurname(e.target.value)}
-                                required={true}
-                                isInvalid={!isValid}
-                            />
-                        </Form.Group>
-                        <Form.Group className="auth-form-group">
-                            <Form.Label className="auth-form-label">Username</Form.Label>
-                            <Form.Control
-                                className="auth-form-input"
-                                type="text"
-                                placeholder="username"
-                                onChange={(e) => setUsername(e.target.value)}
-                                required={true}
-                                isInvalid={!isValid}
-                            />
-                        </Form.Group>
-                        <Form.Group className="auth-form-group">
-                            <Form.Label className="auth-form-label">Password</Form.Label>
-                            <Form.Control
-                                className="auth-form-input"
-                                type="password"
-                                placeholder="password"
-                                onChange={(e) => setPassword(e.target.value)}
-                                required={true}
-                                isInvalid={!isValid}
-                            />
-                            <Form.Control.Feedback type="invalid">{userStore.getMessage}</Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="auth-form-group">
-                            <Button variant="primary" type="button" onClick={register} className="login-submit">
-                                Register
-                            </Button>
-                        </Form.Group>
-                    </Form>
-                </Col>
-                <Col></Col>
-            </Row>
-        </Container>
+        <CenterContainer containerClass="container-auth">
+            <Form className="auth-form">
+                <FormHeader baseClass={baseClass} title="Register" />
+                <FormGroup
+                    baseClass={baseClass}
+                    typeInput="text"
+                    placeholder="name"
+                    isInvalid={!isValid}
+                    isRequired={true}
+                    onChange={setName}
+                    labelText="Name"
+                />
+                <FormGroup
+                    baseClass={baseClass}
+                    isInvalid={!isValid}
+                    isRequired={true}
+                    labelText="Surname"
+                    onChange={setSurname}
+                    placeholder="surname"
+                    typeInput="text"
+                />
+                <FormGroup
+                    baseClass={baseClass}
+                    isInvalid={!isValid}
+                    isRequired={true}
+                    labelText="Username"
+                    onChange={setUsername}
+                    placeholder="username"
+                    typeInput="text"
+                />
+                <FormGroup
+                    baseClass={baseClass}
+                    isInvalid={!isValid}
+                    isRequired={true}
+                    labelText="Password"
+                    onChange={setPassword}
+                    placeholder="password"
+                    typeInput="password"
+                    feedbackText={userStore.getMessage}
+                />
+                <Form.Group className="auth-form-group">
+                    <Button variant="primary" type="button" onClick={register} className="auth-submit">
+                        Register
+                    </Button>
+                </Form.Group>
+            </Form>
+        </CenterContainer>
     );
 };
 

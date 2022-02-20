@@ -6,7 +6,6 @@ import java.util.List;
 public class PublicApi {
     public static List<String> publicApiList = Arrays.asList(
             "/api/login",
-            "/api/token/refresh",
             "/api/register",
             "/api/login/v2",
             "/api/user/data"

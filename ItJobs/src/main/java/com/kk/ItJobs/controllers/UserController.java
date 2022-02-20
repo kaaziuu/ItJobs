@@ -1,6 +1,6 @@
 package com.kk.ItJobs.controllers;
 
-import com.kk.ItJobs.Dto.user.BaseResponse;
+import com.kk.ItJobs.Dto.BaseResponse;
 import com.kk.ItJobs.Dto.user.auth.AuthResponse;
 import com.kk.ItJobs.Dto.user.auth.LoginRequest;
 import com.kk.ItJobs.Dto.user.auth.RegisterRequest;
@@ -10,19 +10,14 @@ import com.kk.ItJobs.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:3000"})
 public class UserController {
     private final UserService userService;
     private final JwtUtils jwtUtils;
@@ -30,12 +25,6 @@ public class UserController {
     @GetMapping("/user/all")
     public ResponseEntity<List<AppUser>> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
-    }
-
-    @PostMapping("/user/save")
-    public ResponseEntity<AppUser> saveUser(@RequestBody AppUser user) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
     @PostMapping("/login/v2")
@@ -112,11 +101,6 @@ public class UserController {
                 "",
                 null
         );
-    }
-
-    @PostMapping("/logout/v2")
-    public void logout(HttpServletResponse response) {
-//        jwtUtils.removeRefreshToken(response);
     }
 }
 

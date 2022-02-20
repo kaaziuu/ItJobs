@@ -3,6 +3,8 @@
 body {
     background-color: #fafafa;
     font-family: "Gelasio", serif;
+    box-sizing: border-box;
 }
 
 @import "./auth/auth.scss";
+@import "./company/index.scss";

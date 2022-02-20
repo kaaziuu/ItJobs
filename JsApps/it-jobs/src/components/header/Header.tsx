@@ -25,15 +25,20 @@ const Header = () => {
                         {isLogged ? (
                             <NavDropdown title="My Account" id="collasible-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">My Offert</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">My Company</NavDropdown.Item>
+                                <NavDropdown.Item href={Path.myComany}>My Company</NavDropdown.Item>
                             </NavDropdown>
                         ) : null}
                     </Nav>
                     <Nav>
                         {isLogged ? (
-                            <Nav.Link onClick={logout}>Logout</Nav.Link>
+                            <>
+                                <Nav.Link onClick={logout}>Logout</Nav.Link>
+                            </>
                         ) : (
-                            <Nav.Link href={Path.login}>Login</Nav.Link>
+                            <>
+                                <Nav.Link href={Path.login}>Login</Nav.Link>
+                                <Nav.Link href={Path.register}>Register</Nav.Link>
+                            </>
                         )}
                     </Nav>
                 </Navbar.Collapse>

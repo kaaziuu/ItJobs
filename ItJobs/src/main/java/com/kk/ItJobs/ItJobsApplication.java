@@ -34,20 +34,17 @@ public class ItJobsApplication {
         return args -> {
             roleService.saveRole(new Role(null, "ROLE_USER"));
             roleService.saveRole(new Role(null, "ROLE_ADMIN"));
-            roleService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
 
-            userService.saveUser(new AppUser(null, "Jhon", "Tr", "jhon", "1234", new ArrayList<>()));
-            userService.saveUser(new AppUser(null, "Will", "Smith", "will", "1234", new ArrayList<>()));
-            userService.saveUser(new AppUser(null, "Jim", "Carry", "jim", "1234", new ArrayList<>()));
-            userService.saveUser(new AppUser(null, "Tomasz", "Karolak", "szczerba", "1234", new ArrayList<>()));
+            userService.saveUser(new AppUser(null, "Jhon", "Tr", "jhon", "1234", new ArrayList<>(), null));
+            userService.saveUser(new AppUser(null, "Will", "Smith", "will", "1234", new ArrayList<>(), null));
+            userService.saveUser(new AppUser(null, "Jim", "Carry", "jim", "1234", new ArrayList<>(), null));
+            userService.saveUser(new AppUser(null, "admin", "admin", "admin", "passwd", new ArrayList<>(), null));
 
             roleService.addRoleToUser("jhon", "ROLE_USER");
-            roleService.addRoleToUser("will", "ROLE_ADMIN");
-            roleService.addRoleToUser("jim", "ROLE_ADMIN");
+            roleService.addRoleToUser("will", "ROLE_USER");
             roleService.addRoleToUser("jim", "ROLE_USER");
-            roleService.addRoleToUser("szczerba", "ROLE_SUPER_ADMIN");
-            roleService.addRoleToUser("szczerba", "ROLE_USER");
-            roleService.addRoleToUser("szczerba", "ROLE_ADMIN");
+            roleService.addRoleToUser("admin", "ROLE_USER");
+            roleService.addRoleToUser("admin", "ROLE_ADMIN");
         };
 
     }

@@ -1,25 +1,36 @@
 import { Route, Switch } from "react-router";
+import MyCompany from "../../pages/company/MyCompany";
+import CreateCompany from "../../pages/company/CreateCompany";
 import Home from "../../pages/home/Home";
 import Login from "../../pages/login/Login";
 import Register from "../../pages/register/Register";
 import Path from "./Path";
+import RouteWithSecurity from "./RouteWithSecurity";
 
-const Router = () => {
-    return (
-        <>
-            <Switch>
-                <Route exact path={Path.home}>
-                    <Home />
-                </Route>
-                <Route exact path={Path.login}>
-                    <Login />
-                </Route>
-                <Route exact path={Path.register}>
-                    <Register />
-                </Route>
-            </Switch>
-        </>
-    );
-};
+const Router = () => (
+    <>
+        <Switch>
+            <Route exact path={Path.home}>
+                <Home />
+            </Route>
+            <Route exact path={Path.login}>
+                <Login />
+            </Route>
+            <Route exact path={Path.register}>
+                <Register />
+            </Route>
+            <Route exact path={Path.myComany}>
+                <RouteWithSecurity>
+                    <MyCompany />
+                </RouteWithSecurity>
+            </Route>
+            <Route exact path={Path.createCompany}>
+                <RouteWithSecurity>
+                    <CreateCompany />
+                </RouteWithSecurity>
+            </Route>
+        </Switch>
+    </>
+);
 
 export default Router;

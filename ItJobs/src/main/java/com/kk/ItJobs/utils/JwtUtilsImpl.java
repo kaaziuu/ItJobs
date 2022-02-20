@@ -5,14 +5,13 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kk.ItJobs.Dto.user.BaseResponse;
+import com.kk.ItJobs.Dto.BaseResponse;
 import com.kk.ItJobs.Dto.user.auth.AuthResponse;
 import com.kk.ItJobs.model.AppUser;
 import com.kk.ItJobs.model.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -74,6 +74,16 @@ public class JwtUtilsImpl implements JwtUtils {
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = verifier.verify(token);
         return decodedJWT.getSubject();
+    }
+
+    @Override
+    public String getUsernameFromRequest(HttpServletRequest request) {
+        var token = request.getHeader(AUTHORIZATION);
+        if(token != null && token.startsWith("Bearer ")){
+            token = token.substring("Bearer ".length());
+            return getUsernameFromToken(token);
+        }
+        return null;
     }
 
 }

@@ -5,7 +5,9 @@ import AuthResponse from "./dto/AuthResponse";
 import LoginReguest from "./dto/LoginRequest";
 import RegisterReguest from "./dto/RegisterRequest";
 import User from "./models/User";
-import UserApiPath from "./UserApiPaht";
+import UserApiPath from "./UserApiPath";
+import jwt_decode from "jwt-decode";
+import AccessToken from "./models/AccessToken";
 
 export const Login = async (form: LoginReguest): Promise<BaseResponse<AuthResponse>> => {
     const resp = await axios
@@ -75,4 +77,9 @@ export const GetDefultUser = (): User => {
         surname: "",
         username: "",
     } as User;
+};
+
+export const GetRolesFromAccessToken = (accessToken: string): string[] => {
+    const decodedAccessToken = jwt_decode<AccessToken>(accessToken);
+    return decodedAccessToken.roles;
 };

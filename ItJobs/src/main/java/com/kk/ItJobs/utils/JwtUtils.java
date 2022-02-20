@@ -18,4 +18,6 @@ public interface JwtUtils {
     void setErrorToResponse(HttpServletResponse response, Exception exception) throws IOException;
 
     String getUsernameFromToken(String token);
+
+    String getUsernameFromRequest(HttpServletRequest request);
 }

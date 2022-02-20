@@ -66,7 +66,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 request.getSurname(),
                 request.getUsername(),
                 passwordEncoder.encode(request.getPassword()),
-                roles
+                roles,
+                null
         );
         return userRepository.save(user);
     }

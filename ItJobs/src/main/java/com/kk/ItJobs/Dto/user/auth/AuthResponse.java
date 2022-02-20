@@ -1,6 +1,5 @@
 package com.kk.ItJobs.Dto.user.auth;
 
-import com.kk.ItJobs.Dto.user.BaseResponse;
 import com.kk.ItJobs.model.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
