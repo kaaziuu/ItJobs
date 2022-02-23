@@ -7,8 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-import java.util.List;
-
 import static javax.persistence.GenerationType.AUTO;
 
 @Getter

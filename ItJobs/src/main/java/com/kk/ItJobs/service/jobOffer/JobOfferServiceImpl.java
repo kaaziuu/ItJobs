@@ -3,17 +3,17 @@ package com.kk.ItJobs.service.jobOffer;
 import com.kk.ItJobs.Dto.BaseResponse;
 import com.kk.ItJobs.Dto.jobOffer.CreateUpdateJobOfferRequest;
 import com.kk.ItJobs.Dto.jobOffer.JobOfferResponse;
+import com.kk.ItJobs.Dto.jobOffer.ListJobOfferResponse;
 import com.kk.ItJobs.model.AppUser;
 import com.kk.ItJobs.model.JobOffer;
 import com.kk.ItJobs.repository.CompanyRepository;
 import com.kk.ItJobs.repository.JobOfferRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class JobOfferServiceImpl implements JobOfferService {
-    private JobOfferRepository jobOfferRepository;
-    private CompanyRepository companyRepository;
+    private final JobOfferRepository jobOfferRepository;
+    private final CompanyRepository companyRepository;
 
     @Override
     public BaseResponse<JobOfferResponse> getJobOfferByUuid(String uuid) {
@@ -36,14 +36,26 @@ public class JobOfferServiceImpl implements JobOfferService {
     }
 
     @Override
-    public BaseResponse<List<JobOfferResponse>> getJobOffer(Integer page, Integer size) {
+    public BaseResponse<ListJobOfferResponse> getJobOffer(Integer page, Integer size) {
         var jobOffers = jobOfferRepository
-                .findAll(PageRequest.of(page, size))
+                .findAll()
                 .stream()
-                .map(JobOfferResponse::jobOfferResponseFromJobOffer)
+                .skip((long) (page - 1) * size)
+                .limit(size)
                 .collect(Collectors.toList());
 
-        return BaseResponse.success(jobOffers);
+        return BaseResponse.success(ListJobOfferResponse.listJobOfferResponseFromListJobOffer(jobOffers, jobOfferRepository.count()));
+    }
+
+    @Override
+    public BaseResponse<ListJobOfferResponse> getUserJobOffer(AppUser user) {
+        var userCompany = companyRepository.getCompanyByUser(user);
+        if (userCompany == null) {
+            return BaseResponse.fail("user don't have a company");
+        }
+        var jobOffers = new ArrayList<>(jobOfferRepository.getAllByCompany(userCompany));
+
+        return BaseResponse.success(ListJobOfferResponse.listJobOfferResponseFromListJobOffer(jobOffers, jobOfferRepository.count()));
     }
 
     @Override
@@ -51,6 +63,9 @@ public class JobOfferServiceImpl implements JobOfferService {
         var company = companyRepository.getCompanyByUser(user);
         if (company == null) {
             return BaseResponse.fail("User doesn't have a company");
+        }
+        if (!CreateUpdateJobOfferRequest.verify(createForm)) {
+            return BaseResponse.fail("Invalid data");
         }
 
         var jobOffer = new JobOffer(

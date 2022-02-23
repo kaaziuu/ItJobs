@@ -1,0 +1,19 @@
+.job-offer-list {
+    &-container {
+        margin-top: 15px;
+    }
+
+    &-col {
+        margin: 10px 0;
+    }
+
+    &-card {
+        height: 200px;
+
+        &-body-text {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    }
+}
