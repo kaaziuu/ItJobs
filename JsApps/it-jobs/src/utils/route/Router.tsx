@@ -1,19 +1,20 @@
 import { Route, Switch } from "react-router";
-import MyCompany from "../../pages/company/MyCompany";
 import CreateCompany from "../../pages/company/CreateCompany";
-import Home from "../../pages/home/Home";
+import MyCompany from "../../pages/company/MyCompany";
+import UpdateCompany from "../../pages/company/UpdateCompany";
+import JobOfferCreate from "../../pages/jobOffer/create/JobOfferCreate";
+import JobOfferDetails from "../../pages/jobOffer/details/JobOfferDetails";
+import JobOfferList from "../../pages/jobOffer/list/JobOfferList";
+import JobOfferUpdate from "../../pages/jobOffer/update/JobOfferUpdate";
 import Login from "../../pages/login/Login";
 import Register from "../../pages/register/Register";
 import Path from "./Path";
 import RouteWithSecurity from "./RouteWithSecurity";
-import UpdateCompany from "../../pages/company/UpdateCompany";
-import JobOfferList from "../../pages/jobOffer/list/JobOfferList";
-import JobOfferDetails from "../../pages/jobOffer/details/JobOfferDetails";
 
 const Router = () => (
     <Switch>
         <Route exact path={Path.home}>
-            <Home />
+            <JobOfferList />
         </Route>
         <Route exact path={Path.login}>
             <Login />
@@ -36,11 +37,18 @@ const Router = () => (
                 <UpdateCompany />
             </RouteWithSecurity>
         </Route>
+        <Route exact path={Path.jobOfferCreate}>
+            <RouteWithSecurity>
+                <JobOfferCreate />
+            </RouteWithSecurity>
+        </Route>
+        <Route path={Path.jobOfferUpdate}>
+            <RouteWithSecurity>
+                <JobOfferUpdate />
+            </RouteWithSecurity>
+        </Route>
         <Route path={Path.jobOfferDetails}>
             <JobOfferDetails />
-        </Route>
-        <Route exact path={Path.jobOffer}>
-            <JobOfferList />
         </Route>
     </Switch>
 );

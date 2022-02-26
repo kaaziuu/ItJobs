@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -36,10 +37,11 @@ public class JobOfferServiceImpl implements JobOfferService {
     }
 
     @Override
-    public BaseResponse<ListJobOfferResponse> getJobOffer(Integer page, Integer size) {
+    public BaseResponse<ListJobOfferResponse> getJobOffer(Integer page, Integer size, String search) {
         var jobOffers = jobOfferRepository
                 .findAll()
                 .stream()
+                .filter(x -> search == null || x.getPosition().contains(search))
                 .skip((long) (page - 1) * size)
                 .limit(size)
                 .collect(Collectors.toList());
@@ -75,6 +77,8 @@ public class JobOfferServiceImpl implements JobOfferService {
                 createForm.getMaximumSalary(),
                 createForm.getDescription(),
                 createForm.getPosition(),
+                createForm.getEmail(),
+                new Date(),
                 company
         );
 
@@ -89,11 +93,15 @@ public class JobOfferServiceImpl implements JobOfferService {
         if (jobOffer.isEmpty()) {
             return BaseResponse.fail("job offer not found");
         }
+        if(!CreateUpdateJobOfferRequest.verify(updateForm)){
+            return BaseResponse.fail("Invalid data");
+        }
         var entityOffer = jobOffer.get();
         entityOffer.setDescription(updateForm.getDescription());
         entityOffer.setMaximumSalary(updateForm.getMaximumSalary());
         entityOffer.setMinimumSalary(updateForm.getMinimumSalary());
         entityOffer.setPosition(updateForm.getPosition());
+        entityOffer.setEmail(updateForm.getEmail());
 
         return BaseResponse.success(JobOfferResponse.jobOfferResponseFromJobOffer(entityOffer));
     }

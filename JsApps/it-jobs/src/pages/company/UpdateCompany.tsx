@@ -9,7 +9,7 @@ import FormHeader from "../../layout/form/FormHeader";
 import FormTextAreaGroup from "../../layout/form/FormTextAreaGroup";
 import CreateUpdateCompanyRequest from "../../service/company/dto/CreateUpdateCompanyRequest";
 import { UseStore } from "../../stores/Store";
-import CreateClass from "../../utils/components/CreateClass";
+import CreateClass from "../../utils/common/CreateClass";
 import Path from "../../utils/route/Path";
 
 const UpdateCompany = () => {
@@ -20,7 +20,7 @@ const UpdateCompany = () => {
     const [description, setDescription] = useState<string>("");
     const [isInvalid, setIsInvalid] = useState<boolean>(false);
     const [cookie] = useCookies(["token"]);
-    const baseClass = "create-company";
+    const baseClass = "create-update-company";
 
     const updateCompany = async () => {
         const updateForm = {

@@ -11,7 +11,7 @@ import java.util.List;
 public interface JobOfferService {
     BaseResponse<JobOfferResponse> getJobOfferByUuid(String uuid);
 
-    BaseResponse<ListJobOfferResponse> getJobOffer(Integer page, Integer take);
+    BaseResponse<ListJobOfferResponse> getJobOffer(Integer page, Integer take, String search);
 
     BaseResponse<ListJobOfferResponse> getUserJobOffer(AppUser user);
 

@@ -1,3 +1,5 @@
+import Company from "../../company/models/Company";
+
 export default interface User {
     id: number;
     name: string;
@@ -5,4 +7,5 @@ export default interface User {
     username: string;
     expireTokenDate: Date;
     accessToken: string;
+    company?: Company;
 }

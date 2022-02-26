@@ -1,5 +1,5 @@
 import { Form } from "react-bootstrap";
-import CreateClass from "../../utils/components/CreateClass";
+import CreateClass from "../../utils/common/CreateClass";
 
 interface props {
     baseClass: string;

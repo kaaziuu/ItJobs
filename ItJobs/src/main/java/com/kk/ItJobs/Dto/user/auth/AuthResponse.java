@@ -1,5 +1,6 @@
 package com.kk.ItJobs.Dto.user.auth;
 
+import com.kk.ItJobs.Dto.company.CompanyResponse;
 import com.kk.ItJobs.model.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,13 +14,19 @@ public class AuthResponse {
     private String surname;
     private String username;
     private Long id;
+    private CompanyResponse company;
 
-    public static AuthResponse fromAppUser(AppUser user){
+    public static AuthResponse fromAppUser(AppUser user) {
+        var company = user.getCompany() != null
+                ? CompanyResponse.companyResponseFromCompany(user.getCompany())
+                : null;
+
         return new AuthResponse(
                 user.getName(),
                 user.getSurname(),
                 user.getUsername(),
-                user.getId()
+                user.getId(),
+                company
         );
     }
 }

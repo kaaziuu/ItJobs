@@ -1,0 +1,16 @@
+.container-create-update-company {
+    margin-top: 30px;
+    .create-update-company {
+        &-form {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        &-group-title {
+            text-align: center;
+        }
+        &-group {
+            margin: 10px 0;
+        }
+    }
+}

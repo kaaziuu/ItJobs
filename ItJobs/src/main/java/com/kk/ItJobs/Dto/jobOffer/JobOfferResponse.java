@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,6 +19,8 @@ public class JobOfferResponse {
     private Float maximumSalary;
     private String description;
     private String position;
+    private String email;
+    private Date createAt;
     private CompanyResponse companyResponse;
 
     public static JobOfferResponse jobOfferResponseFromJobOffer(JobOffer jobOffer){
@@ -26,6 +30,8 @@ public class JobOfferResponse {
             jobOffer.getMaximumSalary(),
             jobOffer.getDescription(),
             jobOffer.getPosition(),
+            jobOffer.getEmail(),
+            jobOffer.getCreateAt(),
             CompanyResponse.companyResponseFromCompany(jobOffer.getCompany())
         );
     }

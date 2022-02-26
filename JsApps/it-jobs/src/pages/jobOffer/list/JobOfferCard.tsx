@@ -1,8 +1,8 @@
-import { Button, Card, Col } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { CurrencyEuro } from "react-bootstrap-icons";
 import { history } from "../../..";
 import JobOffer from "../../../service/jobOffer/models/JobOffer";
-import CreateClass from "../../../utils/components/CreateClass";
+import CreateClass from "../../../utils/common/CreateClass";
 import Path from "../../../utils/route/Path";
 
 interface props {
@@ -19,7 +19,7 @@ const JobOfferCard = ({ jobOffer, baseClass }: props) => {
             <Card.Body className={CreateClass(baseClass, "card-body")}>
                 <Card.Title className={CreateClass(baseClass, "card-body-title")}>{jobOffer.position}</Card.Title>
                 <Card.Subtitle className={CreateClass(baseClass, "card-body-subtitle")}>
-                    pay scales from: {jobOffer.minimumSalary} <CurrencyEuro />, to: {jobOffer.maximumSalary}
+                    pay scales from: {jobOffer.minimumSalary} <CurrencyEuro /> to: {jobOffer.maximumSalary}
                     <CurrencyEuro />
                 </Card.Subtitle>
                 <Card.Text className={CreateClass(baseClass, "card-body-text")}>{jobOffer.description}</Card.Text>

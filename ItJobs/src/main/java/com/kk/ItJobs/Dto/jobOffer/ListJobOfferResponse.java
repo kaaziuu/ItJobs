@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,10 @@ public class ListJobOfferResponse {
 
     public static ListJobOfferResponse listJobOfferResponseFromListJobOffer(List<JobOffer> jobOfferList, Long maxCount) {
         return new ListJobOfferResponse(
-                jobOfferList.stream().map(JobOfferResponse::jobOfferResponseFromJobOffer).collect(Collectors.toList()),
+                jobOfferList.stream()
+                        .sorted(Comparator.comparing(JobOffer::getCreateAt).reversed())
+                        .map(JobOfferResponse::jobOfferResponseFromJobOffer)
+                        .collect(Collectors.toList()),
                 maxCount,
                 (long) jobOfferList.size()
         );

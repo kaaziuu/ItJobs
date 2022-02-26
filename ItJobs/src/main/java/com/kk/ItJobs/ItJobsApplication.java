@@ -1,9 +1,11 @@
 package com.kk.ItJobs;
 
 import com.kk.ItJobs.Dto.company.CreateUpdateCompanyRequest;
+import com.kk.ItJobs.Dto.jobOffer.CreateUpdateJobOfferRequest;
 import com.kk.ItJobs.model.AppUser;
 import com.kk.ItJobs.model.Role;
 import com.kk.ItJobs.service.company.CompanyService;
+import com.kk.ItJobs.service.jobOffer.JobOfferService;
 import com.kk.ItJobs.service.user.RoleService;
 import com.kk.ItJobs.service.user.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -32,7 +34,7 @@ public class ItJobsApplication {
     }
 
     @Bean
-    CommandLineRunner run(UserService userService, RoleService roleService, CompanyService companyService) {
+    CommandLineRunner run(UserService userService, RoleService roleService, CompanyService companyService, JobOfferService jobOfferService) {
         return args -> {
             roleService.saveRole(new Role(null, "ROLE_USER"));
             roleService.saveRole(new Role(null, "ROLE_ADMIN"));
@@ -55,6 +57,24 @@ public class ItJobsApplication {
                "testowy opis",
                "testowe motto"
             ), user);
+
+            jobOfferService.createJobOffer(new CreateUpdateJobOfferRequest(
+                    1000f,
+                    2000f,
+                    "testowy opis oferty pracy",
+                    "junior .net",
+                    "test@test.com"
+            ), user);
+
+            jobOfferService.createJobOffer(new CreateUpdateJobOfferRequest(
+                    4000f,
+                    5000f,
+                    "może aplikować ale i tak nikt nie odpisze, bo to testowa oferta admina :)",
+                    "mid .net",
+                    "test@test.com"
+            ), user);
+
+
         };
 
     }

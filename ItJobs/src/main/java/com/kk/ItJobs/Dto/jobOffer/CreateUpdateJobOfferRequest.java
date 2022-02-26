@@ -14,15 +14,19 @@ public class CreateUpdateJobOfferRequest {
     private Float maximumSalary;
     private String description;
     private String position;
+    private String email;
 
     public static boolean verify(CreateUpdateJobOfferRequest request) {
         var v1 = request.getDescription() != null
                 && request.getMaximumSalary() != null
                 && request.getMinimumSalary() != null
-                && request.getPosition() != null;
+                && request.getPosition() != null
+                && request.getEmail() != null;
 
-        var v2 = request.getMaximumSalary() >= request.getMinimumSalary();
+        var v2 = request.getMaximumSalary() >= request.getMinimumSalary() && request.getMinimumSalary() > 0;
 
-        return v1 && v2;
+        var v3 = request.getDescription().length() > 0 && request.getPosition().length() > 0 && request.getEmail().length() > 0;
+
+        return v1 && v2 && v3;
     }
 }

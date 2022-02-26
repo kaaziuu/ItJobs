@@ -30,9 +30,10 @@ public class JobOfferController {
     @GetMapping("/public")
     public BaseResponse<ListJobOfferResponse> getListOffer(
             @RequestParam(name = "page", defaultValue = "1") Integer page,
-            @RequestParam(name = "size", defaultValue = "30") Integer size
+            @RequestParam(name = "size", defaultValue = "30") Integer size,
+            @RequestParam(name = "search", required = false) String search
     ) {
-        return jobOfferService.getJobOffer(page, size);
+        return jobOfferService.getJobOffer(page, size, search);
     }
 
     @PostMapping()

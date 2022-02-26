@@ -8,7 +8,7 @@ import FormHeader from "../../layout/form/FormHeader";
 import FormTextAreaGroup from "../../layout/form/FormTextAreaGroup";
 import CreateUpdateCompanyRequest from "../../service/company/dto/CreateUpdateCompanyRequest";
 import { UseStore } from "../../stores/Store";
-import CreateClass from "../../utils/components/CreateClass";
+import CreateClass from "../../utils/common/CreateClass";
 import Path from "../../utils/route/Path";
 
 const CreateCompany: React.FC = () => {
@@ -19,7 +19,7 @@ const CreateCompany: React.FC = () => {
     const [motto, setMotto] = useState<string | null>(null);
     const [description, setDescription] = useState<string>("");
     const [cookie] = useCookies(["token"]);
-    const baseClass = "create-company";
+    const baseClass = "create-update-company";
 
     const createCompany = async () => {
         const createForm = {

@@ -10,5 +10,7 @@ export const MapFromJobOfferResponseToJobOffer = (jobOfferResponse: JobOfferResp
         minimumSalary: jobOfferResponse.minimumSalary,
         position: jobOfferResponse.position,
         uuid: jobOfferResponse.uuid,
+        email: jobOfferResponse.email,
+        createAt: jobOfferResponse.createAt,
     } as JobOffer;
 };

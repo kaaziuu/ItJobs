@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie";
 import { history } from "../..";
 import CenterContainer from "../../layout/common/CenterContainer";
 import { UseStore } from "../../stores/Store";
-import CreateClass from "../../utils/components/CreateClass";
+import CreateClass from "../../utils/common/CreateClass";
 import Path from "../../utils/route/Path";
 
 const MyCompany: React.FC = () => {

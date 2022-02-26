@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import java.util.Date;
+
 import static javax.persistence.GenerationType.AUTO;
 
 @Getter
@@ -23,8 +25,11 @@ public class JobOffer {
     private Float maximumSalary;
     private String description;
     private String position;
+    private String email;
+    private Date createAt;
 
     @ManyToOne
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
+
 }

@@ -6,5 +6,7 @@ export default interface JobOfferResponse {
     maximumSalary: number;
     description: string;
     position: string;
+    email: string;
+    createAt: Date;
     companyResponse: CompanyResponse;
 }
