@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { useCookies } from "react-cookie";
+import { history } from "../..";
 import { UseStore } from "../../stores/Store";
 import Path from "../../utils/route/Path";
 
@@ -12,6 +13,7 @@ const Header = () => {
     const logout = () => {
         removeTokenCookie("token");
         userStore.logout();
+        history.push(Path.home);
     };
 
     return (
