@@ -50,12 +50,15 @@ public class JobOfferServiceImpl implements JobOfferService {
     }
 
     @Override
-    public BaseResponse<ListJobOfferResponse> getUserJobOffer(AppUser user) {
+    public BaseResponse<ListJobOfferResponse> getUserJobOffer(AppUser user, String search) {
         var userCompany = companyRepository.getCompanyByUser(user);
         if (userCompany == null) {
             return BaseResponse.fail("user don't have a company");
         }
-        var jobOffers = new ArrayList<>(jobOfferRepository.getAllByCompany(userCompany));
+        var jobOffers = jobOfferRepository.getAllByCompany(userCompany)
+                .stream()
+                .filter(x -> search == null || x.getPosition().contains(search))
+                .collect(Collectors.toList());
 
         return BaseResponse.success(ListJobOfferResponse.listJobOfferResponseFromListJobOffer(jobOffers, jobOfferRepository.count()));
     }
@@ -93,7 +96,7 @@ public class JobOfferServiceImpl implements JobOfferService {
         if (jobOffer.isEmpty()) {
             return BaseResponse.fail("job offer not found");
         }
-        if(!CreateUpdateJobOfferRequest.verify(updateForm)){
+        if (!CreateUpdateJobOfferRequest.verify(updateForm)) {
             return BaseResponse.fail("Invalid data");
         }
         var entityOffer = jobOffer.get();

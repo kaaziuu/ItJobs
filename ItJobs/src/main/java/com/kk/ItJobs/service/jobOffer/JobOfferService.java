@@ -13,7 +13,7 @@ public interface JobOfferService {
 
     BaseResponse<ListJobOfferResponse> getJobOffer(Integer page, Integer take, String search);
 
-    BaseResponse<ListJobOfferResponse> getUserJobOffer(AppUser user);
+    BaseResponse<ListJobOfferResponse> getUserJobOffer(AppUser user, String search);
 
     BaseResponse<JobOfferResponse> createJobOffer(CreateUpdateJobOfferRequest createForm, AppUser user);
 

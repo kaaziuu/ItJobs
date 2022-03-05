@@ -23,10 +23,15 @@ export const FetchAllJobOffes = async (searchArg?: string): Promise<BaseResponse
     return response;
 };
 
-export const FetchMyJobOffers = async (accessToken: string): Promise<BaseResponse<ListJobOfferResponse>> => {
+export const FetchMyJobOffers = async (
+    accessToken: string,
+    searchArg?: string
+): Promise<BaseResponse<ListJobOfferResponse>> => {
+    const search = searchArg ? `?search=${searchArg}` : "";
+
     const response = await axios
         .get<null, AxiosResponse<BaseResponse<ListJobOfferResponse>>>(
-            `${Config.serverUrl}${JobOfferApiPath.fetchMy}`,
+            `${Config.serverUrl}${JobOfferApiPath.fetchMy}${search}`,
             GetBaseRequestConfig(accessToken)
         )
         .then((resp) => resp.data)

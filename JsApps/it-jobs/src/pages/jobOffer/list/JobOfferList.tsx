@@ -23,7 +23,7 @@ const JobOfferList = () => {
     useEffect(() => {
         const onlyMy = query.get("only-my") === "true";
         if (onlyMy) {
-            jobOfferStore.fetchMyJobOffer(cookie.token);
+            jobOfferStore.fetchMyJobOffer(cookie.token, search);
         } else {
             jobOfferStore.fetchAllJobOffes(search);
         }

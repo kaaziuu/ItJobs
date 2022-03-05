@@ -50,10 +50,10 @@ export class JobOfferStore {
         }
     };
 
-    fetchMyJobOffer = async (accessToken: string) => {
+    fetchMyJobOffer = async (accessToken: string, searchArg?: string) => {
         this.isLoading = true;
         try {
-            const resp = await FetchMyJobOffers(accessToken);
+            const resp = await FetchMyJobOffers(accessToken, searchArg);
             this._responseJobOfferLisAction(resp);
         } catch (e) {
             runInAction(() => {

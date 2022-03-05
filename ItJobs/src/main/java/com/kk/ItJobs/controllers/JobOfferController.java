@@ -47,10 +47,11 @@ public class JobOfferController {
 
     @GetMapping()
     public BaseResponse<ListJobOfferResponse> getUserJobOffer(
-            HttpServletRequest request
+            HttpServletRequest request,
+            @RequestParam(name = "search", required = false) String search
     ) {
         var user = userService.getUser(jwtUtils.getUsernameFromRequest(request));
-        return jobOfferService.getUserJobOffer(user);
+        return jobOfferService.getUserJobOffer(user, search);
     }
 
     @PostMapping("/update/{uuid}")
